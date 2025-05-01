@@ -1,0 +1,136 @@
+.employee-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #000;
+  }
+  .employee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .employee-header-buttons {
+    display: flex;
+    gap: 10px;
+    color: #3b82f6;
+  }
+  
+  .employee-header-button {
+    background-color: #eef2ff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .employee-header-button:hover {
+    background-color: #c7d2fe;
+  }
+  
+  .employee-table {
+    width: 100%;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .employee-table thead {
+    background-color: #f9fafb;
+  }
+  
+  .employee-table th, 
+  .employee-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  .employee-table th {
+    font-weight: 600;
+    color: #4b5563;
+  }
+  
+  .employee-table td {
+    border-top: 1px solid #f1f5f9;
+  }
+  
+  .employee-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .employee-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .employee-status {
+    display: inline-block;
+    background-color: #ecfdf5;
+    color: #10b981;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+  }
+  
+  .team-badge {
+    display: inline-block;
+    background-color: #ede9fe;
+    color: #7c3aed;
+    padding: 4px 10px;
+    margin: 2px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .action-buttons button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #6b7280;
+    transition: color 0.2s;
+  }
+  
+  .action-buttons button:hover {
+    color: #3b82f6;
+  }
+  
+  .pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .pagination button {
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: white;
+    color: #374151;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .pagination button:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .pagination .active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+  }
+  

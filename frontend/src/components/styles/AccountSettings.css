@@ -1,0 +1,90 @@
+.account-settings-container {
+    padding: 2rem;
+  }
+  
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .edit-button {
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .account-form {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+  
+  .email-section {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  .email-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .email-info i {
+    font-size: 1.5rem;
+    color: #4A90E2;
+  }
+  
+  .add-email-button {
+    background: #f0f0f0;
+    color: #4A90E2;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  

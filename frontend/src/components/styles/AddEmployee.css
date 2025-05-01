@@ -1,0 +1,77 @@
+.add-employee-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .upload-photo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .upload-icon {
+    width: 80px;
+    height: 80px;
+    background: #f0f0f0;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #888;
+  }
+  
+  .upload-photo span {
+    display: block;
+    margin-top: 0.5rem;
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .employee-form {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+  
+  .add-button {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    padding: 1rem;
+    background: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .add-button:hover {
+    background: #357ABD;
+  }
+  
