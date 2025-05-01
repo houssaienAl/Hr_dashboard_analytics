@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import './styles/Layout.css';
 import { Link, useLocation } from 'react-router-dom';
-
+import HomeIcon from '@mui/icons-material/Home';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PersonIcon from '@mui/icons-material/Person';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HelpIcon from '@mui/icons-material/Help';
+import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,40 +31,48 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <img src="/logo.png" alt="Logo" />
         </div>
         <nav className="menu">
-        <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>
-  <i className="fas fa-home"></i>
-</Link>
+          <Link to="/home" className={location.pathname === '/home' ? 'active' : ''}>
+            <HomeIcon />
+          </Link>
 
-          <a href="#"><i className="fas fa-chart-line"></i></a>
+          <a href="/turnover">
+            <BarChartIcon />
+          </a>
           <Link to="/Employee" className={location.pathname === '/Employee' ? 'active' : ''}>
-  <i className="fas fa-user"></i>
-</Link>
+            <PersonIcon />
+          </Link>
 
-          <a href="#"><i className="fas fa-file-pdf"></i></a>
+          <a href="#">
+            <PictureAsPdfIcon />
+          </a>
         </nav>
         <div className="bottom-menu">
-          <a href="#"><i className="fas fa-cog"></i></a>
-          <a href="#"><i className="fas fa-question-circle"></i></a>
+          <a href="#">
+            <SettingsIcon />
+          </a>
+          <a href="#">
+            <HelpIcon />
+          </a>
         </div>
       </aside>
 
       <div className="main">
         <header className="navbar">
           <div className="menu-toggle">
-            <i className="fas fa-bars"></i>
+            <MenuIcon />
           </div>
           <div className="nav-icons">
-            <i className="fas fa-bell"></i>
+            <NotificationsIcon />
             <div className="user-menu">
-              <i className="fas fa-user-circle" onClick={toggleDropdown}></i>
+              <AccountCircleIcon onClick={toggleDropdown} />
               {isDropdownOpen && (
                 <div className="dropdown-menu">
                   <div className="dropdown-header">My Account</div>
                   <Link to="/AccountSettings" className="dropdown-item">
-                    <i className="fas fa-user"></i> Account Settings
-                </Link>
+                    <PersonIcon /> Account Settings
+                  </Link>
                   <a href="#" className="dropdown-item">
-                    <i className="fas fa-sign-out-alt"></i> Logout
+                    <ExitToAppIcon /> Logout
                   </a>
                 </div>
               )}

@@ -21,19 +21,10 @@ def members():
     cur.execute("SELECT department, AVG(salary) AS avg_salary FROM employees GROUP BY department;")
     rows = cur.fetchall()
     df = pd.DataFrame(rows, columns=['Department', 'Salary'])
-    fig = px.bar(df, x='Department', y='Salary', title='Average Salary by Department')
+    fig = px.bar(df, x='Department', y='Salary', title='')
 
     fig.update_layout(width=400, height=300)  # <--- ADD THIS
 
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
-
-@app.route('/api/male-female-chart')
-def male_female_chart():
-    cur.execute("SELECT department, absenteeism_rate_percentage FROM absenteeism_rate_view;")
-    rows = cur.fetchall()
-    df = pd.DataFrame(rows, columns=['Department','absenteeism_rate_percentage'])
-    fig = px.bar(df, x="Department", y="absenteeism_rate_percentage", title="Absenteeism Rate by Department")
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
 
@@ -110,5 +101,34 @@ def register_user():
         conn.rollback()
         print('Registration error:', str(e))  # 👈 Add this line to see real error in console
         return jsonify({'message': 'Registration failed', 'error': str(e)}), 500
+
+@app.route('/api/add-employee', methods=['POST'])
+def add_employee():
+    data = request.json
+    name = data.get('Name')
+    department = data.get('Department')
+    salary = data.get('Salary')
+    citizendesc = data.get('citizendesc')
+    turnover = data.get('turnover', '0')  # Default to '0' if not provided
+    gender = data.get('gender', 'Male')  # Default to 'Male' if not provided
+
+    if not name or not department or not salary or not citizendesc:
+        return jsonify({'message': 'All fields are required'}), 400
+
+    try:
+        cur.execute(
+            """
+            INSERT INTO employees (name, department, salary, citizendesc, turnover, gender)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (name, department, salary, citizendesc, turnover, gender)
+        )
+        conn.commit()
+        return jsonify({'message': 'Employee added successfully!'}), 201
+    except Exception as e:
+        conn.rollback()
+        print('Error adding employee:', str(e))
+        return jsonify({'message': 'Failed to add employee', 'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

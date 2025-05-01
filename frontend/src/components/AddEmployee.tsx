@@ -4,11 +4,11 @@ import './styles/AddEmployee.css';
 const AddEmployee: React.FC = () => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    position: '',
+    Name: '',
+    Department: '',
+    Salary: '',
+    citizendesc: '',
+    turnover: '0',
     gender: 'Male',
   });
 
@@ -25,10 +25,36 @@ const AddEmployee: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData, photo);
-    // Ici tu peux ajouter l'envoi au backend
+
+    try {
+      const response = await fetch('http://localhost:5000/api/add-employee', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message);
+        setFormData({
+          Name: '',
+          Department: '',
+          Salary: '',
+          citizendesc: '',
+          turnover: '0',
+          gender: 'Male',
+        });
+      } else {
+        alert(result.message || 'Failed to add employee');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while adding the employee');
+    }
   };
 
   return (
@@ -36,75 +62,58 @@ const AddEmployee: React.FC = () => {
       <h1>Add employee</h1>
 
       <form className="employee-form" onSubmit={handleSubmit}>
-        <div className="upload-photo">
-          <label htmlFor="photo">
-            <div className="upload-icon">
-              <i className="fas fa-camera"></i>
-            </div>
-            <span>Upload Photo</span>
-          </label>
-          <input
-            type="file"
-            id="photo"
-            style={{ display: 'none' }}
-            onChange={handlePhotoUpload}
-          />
-        </div>
+
 
         <div className="form-grid">
           <div className="form-group">
-            <label>First Name</label>
+            <label>Name</label>
             <input
               type="text"
               name="firstName"
-              value={formData.firstName}
+              value={formData.Name}
               onChange={handleChange}
               placeholder="Enter your first name"
             />
           </div>
 
           <div className="form-group">
-            <label>Last Name</label>
+            <label>Department</label>
             <input
               type="text"
-              name="lastName"
-              value={formData.lastName}
+              name="Department"
+              value={formData.Department}
               onChange={handleChange}
-              placeholder="Enter your last name"
+              placeholder="Enter your Department"
             />
           </div>
 
           <div className="form-group">
-            <label>Your email</label>
+            <label>Salary</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="integer"
+              name="Salary"
+              value={formData.Salary}
               onChange={handleChange}
-              placeholder="Enter your email"
+              placeholder="Enter How Much You Earn"
             />
           </div>
 
           <div className="form-group">
-            <label>Phone Number</label>
+            <label>Citizenship</label>
             <input
               type="text"
-              name="phone"
-              value={formData.phone}
+              name="citizendesc"
+              value={formData.citizendesc}
               onChange={handleChange}
-              placeholder="Enter your phone number"
+              placeholder="Enter the citizenship"
             />
           </div>
-
           <div className="form-group">
-            <label>Position</label>
-            <input
-              type="text"
-              name="position"
-              value={formData.position}
-              onChange={handleChange}
-              placeholder="CEO"
-            />
+            <label>Turnover</label>
+            <select name="turnover" value={formData.turnover} onChange={handleChange}>
+              <option>1</option>
+              <option>0</option>
+            </select>
           </div>
 
           <div className="form-group">

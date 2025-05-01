@@ -96,16 +96,8 @@ const HomePage: React.FC = () => {
 
       <div className="charts-section">
         <div className="chart-card">
-          <h3>Turnover Rate</h3>
-          <LineChart width={300} height={200} data={turnoverData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="achieved" stroke="#FF69B4" />
-            <Line type="monotone" dataKey="target" stroke="#8884d8" />
-          </LineChart>
+          <h3>Average Salary by Department</h3>
+
           <MyChart />
         </div>
 
