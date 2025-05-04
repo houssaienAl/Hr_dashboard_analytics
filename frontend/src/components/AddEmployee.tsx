@@ -9,7 +9,7 @@ const AddEmployee: React.FC = () => {
     Salary: '',
     citizendesc: '',
     turnover: '0',
-    gender: 'Male',
+    gender: 'F',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -46,7 +46,7 @@ const AddEmployee: React.FC = () => {
           Salary: '',
           citizendesc: '',
           turnover: '0',
-          gender: 'Male',
+          gender: 'F',
         });
       } else {
         alert(result.message || 'Failed to add employee');
@@ -68,11 +68,11 @@ const AddEmployee: React.FC = () => {
           <div className="form-group">
             <label>Name</label>
             <input
-              type="text"
-              name="firstName"
+              type="integer"
+              name="Name"
               value={formData.Name}
               onChange={handleChange}
-              placeholder="Enter your first name"
+              placeholder="Enter Name"
             />
           </div>
 
@@ -119,9 +119,9 @@ const AddEmployee: React.FC = () => {
           <div className="form-group">
             <label>Gender</label>
             <select name="gender" value={formData.gender} onChange={handleChange}>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
+              <option>F</option>
+              <option>M</option>
+
             </select>
           </div>
         </div>

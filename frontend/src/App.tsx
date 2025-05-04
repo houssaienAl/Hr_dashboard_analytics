@@ -12,19 +12,21 @@ import RegisterPage from './components/RegisterPage';
 import TurnoverPage from './components/TurnoverPage';
 
 
+
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/Register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<Layout><DashboardPage /></Layout>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/Home" element={<Layout><HomePage /></Layout>} />
         <Route path="/Employee" element={<Layout><EmployeePage /></Layout>} />
         <Route path="/AddEmployee" element={<Layout><AddEmployee /></Layout>} />
         <Route path="/AccountSettings" element={<Layout><AccountSettings /></Layout>} />
-        <Route path="/Register" element={<Layout><RegisterPage /></Layout>} />
+
         <Route path="/Turnover" element={<Layout><TurnoverPage /></Layout>} />
 
 

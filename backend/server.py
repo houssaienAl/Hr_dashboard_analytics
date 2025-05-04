@@ -51,7 +51,7 @@ def Department_employee():
 
 
 def employee_details():
-    cur.execute("SELECT id,name,department,dateofhire FROM employee_details;")
+    cur.execute("SELECT id,name,department,dateofhire FROM employee_details order by dateofhire DESC;")
     rows = cur.fetchall()
     df = pd.DataFrame(rows, columns=['id', 'name', 'department', 'dateofhire'])
     return jsonify(df.to_dict(orient='records'))
@@ -86,20 +86,28 @@ def female_male():
 @app.route('/api/register', methods=['POST'])
 def register_user():
     data = request.json
-    data.get('name')
+    name = data.get('name')
     email = data.get('email')
     password = data.get('password')
 
-    if not email or not password:
-        return jsonify({'message': 'Email and Password are required'}), 400
+    if not email or not password or not name:
+        return jsonify({'message': 'Name, Email, and Password are required'}), 400
 
     try:
-        cur.execute("INSERT INTO users (email, password) VALUES (%s, %s)", (email, password))
+        # Check if the email already exists
+        cur.execute("SELECT COUNT(*) FROM users WHERE email = %s", (email,))
+        email_exists = cur.fetchone()[0]
+
+        if email_exists > 0:
+            return jsonify({'message': 'Email is already in use'}), 400
+
+        # Insert the new user
+        cur.execute("INSERT INTO users (name, email, password) VALUES (%s, %s, %s)", (name, email, password))
         conn.commit()
         return jsonify({'message': 'User registered successfully!'}), 201
     except Exception as e:
         conn.rollback()
-        print('Registration error:', str(e))  # 👈 Add this line to see real error in console
+        print('Registration error:', str(e))  # Debugging: Log the error
         return jsonify({'message': 'Registration failed', 'error': str(e)}), 500
 
 @app.route('/api/add-employee', methods=['POST'])
@@ -110,7 +118,7 @@ def add_employee():
     salary = data.get('Salary')
     citizendesc = data.get('citizendesc')
     turnover = data.get('turnover', '0')  # Default to '0' if not provided
-    gender = data.get('gender', 'Male')  # Default to 'Male' if not provided
+    gender = data.get('gender', 'M')  # Default to 'Male' if not provided
 
     if not name or not department or not salary or not citizendesc:
         return jsonify({'message': 'All fields are required'}), 400
@@ -118,8 +126,8 @@ def add_employee():
     try:
         cur.execute(
             """
-            INSERT INTO employees (name, department, salary, citizendesc, turnover, gender)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO employees (Employee_Name, Department, Salary, CitizenDesc, Turnover, Sex, dateofhire)
+            VALUES (%s, %s, %s, %s, %s, %s, CURRENT_DATE)
             """,
             (name, department, salary, citizendesc, turnover, gender)
         )
@@ -129,6 +137,28 @@ def add_employee():
         conn.rollback()
         print('Error adding employee:', str(e))
         return jsonify({'message': 'Failed to add employee', 'error': str(e)}), 500
+
+@app.route('/api/login', methods=['POST'])
+def login_user():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'message': 'Email and Password are required'}), 400
+
+    try:
+        # Check if the user exists and the password matches
+        cur.execute("SELECT id, name FROM users WHERE email = %s AND password = %s", (email, password))
+        user = cur.fetchone()
+
+        if user:
+            return jsonify({'message': 'Login successful!', 'user': {'id': user[0], 'name': user[1]}}), 200
+        else:
+            return jsonify({'message': 'Invalid email or password'}), 401
+    except Exception as e:
+        print('Login error:', str(e))  # Debugging: Log the error
+        return jsonify({'message': 'Login failed', 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

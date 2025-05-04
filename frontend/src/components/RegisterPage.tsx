@@ -7,11 +7,11 @@ import LockIcon from '@mui/icons-material/Lock';
 const RegisterPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState(''); // not sent to backend yet
+    const [name, setname] = useState(''); // not sent to backend yet
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const handleRegister = async () => {
-        if (!username || !email || !password || !confirmPassword) {
+        if (!name || !email || !password || !confirmPassword) {
             alert('Please fill all required fields.');
             return;
         }
@@ -29,7 +29,7 @@ const RegisterPage: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name: username, email, password }),
+                body: JSON.stringify({ name, email, password }),
             });
 
             const data = await response.json();
@@ -59,8 +59,8 @@ const RegisterPage: React.FC = () => {
                     <input
                         type="text"
                         placeholder="USERNAME"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={name}
+                        onChange={(e) => setname(e.target.value)}
                     />
                 </div>
                 <div className="input-group">
