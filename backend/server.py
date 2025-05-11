@@ -9,7 +9,6 @@ from flask_cors import CORS
 import joblib
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
-
 app = Flask(__name__)
 CORS(app)  # Allow Cross-Origin requests (important for React frontend!)
 model = joblib.load('turnover_predictor.pkl')
@@ -54,13 +53,16 @@ def Department_employee():
 
 
 @app.route('/api/employee-details', methods=['GET'])
-
-
 def employee_details():
-    cur.execute("SELECT id,Employee_name,department,dateofhire FROM employees order by dateofhire DESC;")
-    rows = cur.fetchall()
-    df = pd.DataFrame(rows, columns=['id', 'name', 'department', 'dateofhire'])
-    return jsonify(df.to_dict(orient='records'))
+    try:
+        cur.execute("SELECT id, Employee_name, department, dateofhire FROM employees ORDER BY dateofhire DESC;")
+        rows = cur.fetchall()
+        df = pd.DataFrame(rows, columns=['id', 'name', 'department', 'dateofhire'])
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        conn.rollback()  # Rollback the transaction
+        print('Error in /api/employee-details:', str(e))  # Debugging: Log the error
+        return jsonify({'message': 'Failed to fetch employee details', 'error': str(e)}), 500
 
 
 @app.route('/api/count', methods=['GET'])
@@ -140,8 +142,8 @@ def add_employee():
         conn.commit()
         return jsonify({'message': 'Employee added successfully!'}), 201
     except Exception as e:
-        conn.rollback()
-        print('Error adding employee:', str(e))
+        conn.rollback()  # Rollback the transaction
+        print('Error adding employee:', str(e))  # Debugging: Log the error
         return jsonify({'message': 'Failed to add employee', 'error': str(e)}), 500
 
 @app.route('/api/login', methods=['POST'])
@@ -181,23 +183,11 @@ def delete_employee(employee_id):
         conn.commit()
         return jsonify({'message': 'Employee deleted successfully!'}), 200
     except Exception as e:
-        conn.rollback()
+        conn.rollback()  # Rollback the transaction
         print('Error deleting employee:', str(e))  # Debugging: Log the error
         return jsonify({'message': 'Failed to delete employee', 'error': str(e)}), 500
-    @app.route('/api/predict-turnover', methods=['GET'])
-def predict_turnover():
-    cur.execute("SELECT id, Age, Salary, Department, CitizenDesc, Sex FROM employees WHERE Age IS NOT NULL AND Salary IS NOT NULL;")
-    rows = cur.fetchall()
-    df = pd.DataFrame(rows, columns=['id', 'Age', 'Salary', 'Department', 'CitizenDesc', 'Sex'])
 
-    for col in ['Department', 'CitizenDesc', 'Sex']:
-        df[col] = LabelEncoder().fit_transform(df[col])
 
-    features = df[['Age', 'Salary', 'Department', 'CitizenDesc', 'Sex']]
-    predictions = model.predict(features)
-    df['prediction'] = predictions
-
-    return jsonify(df.to_dict(orient='records'))
 
 if __name__ == '__main__':
     app.run(debug=True)
