@@ -6,9 +6,11 @@ import json
 import psycopg2
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import joblib
+import numpy as np
 app = Flask(__name__)
 CORS(app)  # Allow Cross-Origin requests (important for React frontend!)
-
+model = joblib.load('turnover_predictor.pkl')
 conn = psycopg2.connect(
     host="localhost",
     database="employee_db",
@@ -161,6 +163,35 @@ def login_user():
     except Exception as e:
         print('Login error:', str(e))  # Debugging: Log the error
         return jsonify({'message': 'Login failed', 'error': str(e)}), 500
+@app.route('/api/predict-turnover', methods=['POST'])
+def predict_turnover():
+    try:
+        data = request.get_json()
 
+        # These must match exactly the columns used during training
+        input_dict = {
+            'salary': float(data.get('salary', 0)),
+            'empsatisfaction': int(data.get('empsatisfaction', 0)),
+            'engagementsurvey': float(data.get('engagementsurvey', 0)),
+            'specialprojectscount': int(data.get('specialprojectscount', 0)),
+            'dayslatelast30': int(data.get('dayslatelast30', 0)),
+            'absences': int(data.get('absences', 0)),
+            # Add any other one-hot/dummy columns if needed
+        }
+
+        # Build a one-row DataFrame that matches training format
+        input_df = pd.DataFrame([input_dict])
+
+        prediction = model.predict(input_df)[0]
+        probability = model.predict_proba(input_df)[0][1]
+
+        return jsonify({
+            'prediction': int(prediction),
+            'risk_score': round(float(probability), 2)
+        })
+
+    except Exception as e:
+        print("🔥 Prediction error:", str(e))  # Logs the real cause
+        return jsonify({'error': str(e)}), 500
 if __name__ == '__main__':
     app.run(debug=True)

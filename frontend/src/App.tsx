@@ -10,7 +10,7 @@ import AddEmployee from './components/AddEmployee';
 import AccountSettings from './components/AccountSettings';
 import RegisterPage from './components/RegisterPage';
 import TurnoverPage from './components/TurnoverPage';
-
+import PredictTurnover from './components/Test';
 
 
 const App: React.FC = () => {
@@ -28,6 +28,8 @@ const App: React.FC = () => {
         <Route path="/AccountSettings" element={<Layout><AccountSettings /></Layout>} />
 
         <Route path="/Turnover" element={<Layout><TurnoverPage /></Layout>} />
+        <Route path="/PredictTurnover" element={<PredictTurnover />} />
+
 
 
       </Routes>
