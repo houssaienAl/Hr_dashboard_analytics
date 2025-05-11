@@ -47,11 +47,13 @@ def Department_employee():
     fig = px.pie(df, names='department', values='turnover_rate_percentage', title='Deparment Employee turnover_rate_percentage')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
+
+
 @app.route('/api/employee-details', methods=['GET'])
 
 
 def employee_details():
-    cur.execute("SELECT id,name,department,dateofhire FROM employee_details order by dateofhire DESC;")
+    cur.execute("SELECT id,Employee_name,department,dateofhire FROM employees order by dateofhire DESC;")
     rows = cur.fetchall()
     df = pd.DataFrame(rows, columns=['id', 'name', 'department', 'dateofhire'])
     return jsonify(df.to_dict(orient='records'))
