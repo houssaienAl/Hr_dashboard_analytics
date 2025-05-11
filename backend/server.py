@@ -8,6 +8,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
 import numpy as np
+from sklearn.preprocessing import LabelEncoder
+
 app = Flask(__name__)
 CORS(app)  # Allow Cross-Origin requests (important for React frontend!)
 model = joblib.load('turnover_predictor.pkl')
@@ -163,35 +165,39 @@ def login_user():
     except Exception as e:
         print('Login error:', str(e))  # Debugging: Log the error
         return jsonify({'message': 'Login failed', 'error': str(e)}), 500
-@app.route('/api/predict-turnover', methods=['POST'])
-def predict_turnover():
+
+@app.route('/api/delete-employee/<int:employee_id>', methods=['DELETE'])
+def delete_employee(employee_id):
     try:
-        data = request.get_json()
+        # Check if the employee exists
+        cur.execute("SELECT id FROM employees WHERE id = %s", (employee_id,))
+        employee = cur.fetchone()
 
-        # These must match exactly the columns used during training
-        input_dict = {
-            'salary': float(data.get('salary', 0)),
-            'empsatisfaction': int(data.get('empsatisfaction', 0)),
-            'engagementsurvey': float(data.get('engagementsurvey', 0)),
-            'specialprojectscount': int(data.get('specialprojectscount', 0)),
-            'dayslatelast30': int(data.get('dayslatelast30', 0)),
-            'absences': int(data.get('absences', 0)),
-            # Add any other one-hot/dummy columns if needed
-        }
+        if not employee:
+            return jsonify({'message': 'Employee not found'}), 404
 
-        # Build a one-row DataFrame that matches training format
-        input_df = pd.DataFrame([input_dict])
-
-        prediction = model.predict(input_df)[0]
-        probability = model.predict_proba(input_df)[0][1]
-
-        return jsonify({
-            'prediction': int(prediction),
-            'risk_score': round(float(probability), 2)
-        })
-
+        # Delete the employee
+        cur.execute("DELETE FROM employees WHERE id = %s", (employee_id,))
+        conn.commit()
+        return jsonify({'message': 'Employee deleted successfully!'}), 200
     except Exception as e:
-        print("🔥 Prediction error:", str(e))  # Logs the real cause
-        return jsonify({'error': str(e)}), 500
+        conn.rollback()
+        print('Error deleting employee:', str(e))  # Debugging: Log the error
+        return jsonify({'message': 'Failed to delete employee', 'error': str(e)}), 500
+    @app.route('/api/predict-turnover', methods=['GET'])
+def predict_turnover():
+    cur.execute("SELECT id, Age, Salary, Department, CitizenDesc, Sex FROM employees WHERE Age IS NOT NULL AND Salary IS NOT NULL;")
+    rows = cur.fetchall()
+    df = pd.DataFrame(rows, columns=['id', 'Age', 'Salary', 'Department', 'CitizenDesc', 'Sex'])
+
+    for col in ['Department', 'CitizenDesc', 'Sex']:
+        df[col] = LabelEncoder().fit_transform(df[col])
+
+    features = df[['Age', 'Salary', 'Department', 'CitizenDesc', 'Sex']]
+    predictions = model.predict(features)
+    df['prediction'] = predictions
+
+    return jsonify(df.to_dict(orient='records'))
+
 if __name__ == '__main__':
     app.run(debug=True)

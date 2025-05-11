@@ -1,42 +1,45 @@
-# train_model.py
 import pandas as pd
-import psycopg2
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.preprocessing import LabelEncoder
 import joblib
+import psycopg2
 
-# PostgreSQL connection
+# Connect to DB
 conn = psycopg2.connect(
-    dbname="employee_db",
-    user="postgres",
-    password="admin",
     host="localhost",
-    port="5432"
+    database="employee_db",
+    user="postgres",
+    password="admin"
 )
 
-# Load employee data
-df = pd.read_sql("SELECT * FROM employees WHERE termd IN (0, 1)", conn)
+query = """
+SELECT 
+    DATE_PART('year', AGE(CURRENT_DATE, DOB)) AS Age,
+    Salary,
+    Department,
+    CitizenDesc,
+    Sex,
+    Turnover
+FROM 
+    employees
+WHERE 
+    DOB IS NOT NULL AND Salary IS NOT NULL;
 
-# Preprocess
-df = df.drop(columns=[
-    'id', 'employee_name', 'empid', 'dob',
-    'dateofhire', 'dateoftermination', 'lastperformancereview_date'
-])
-df = df.fillna(0)
-df = pd.get_dummies(df)
+"""
+df = pd.read_sql(query, conn)
 
-X = df.drop("turnover", axis=1)
-y = df["turnover"]
+# Encode categorical
+for col in ['Department', 'CitizenDesc', 'Sex']:
+    df[col] = LabelEncoder().fit_transform(df[col])
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X = df[['Age', 'Salary', 'Department', 'CitizenDesc', 'Sex']]
+y = df['Turnover']
 
-# Train
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+model = LogisticRegression()
 model.fit(X_train, y_train)
 
-# Print metrics
-print(classification_report(y_test, model.predict(X_test)))
-
 # Save model
-joblib.dump(model, "turnover_predictor.pkl")
+joblib.dump(model, 'model/turnover_predictor.pkl')
+print("✅ Model trained and saved at model/turnover_predictor.pkl")
