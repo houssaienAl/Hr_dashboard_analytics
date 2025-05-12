@@ -42,7 +42,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <PersonIcon />
           </Link>
 
-          <a href="#">
+          <a href="/TurnoverDashboard">
             <PictureAsPdfIcon />
           </a>
         </nav>
