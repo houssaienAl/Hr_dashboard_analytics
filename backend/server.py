@@ -11,7 +11,7 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 app = Flask(__name__)
 CORS(app)  # Allow Cross-Origin requests (important for React frontend!)
-model = joblib.load('turnover_predictor.pkl')
+
 conn = psycopg2.connect(
     host="localhost",
     database="employee_db",
@@ -63,7 +63,50 @@ def employee_details():
         conn.rollback()  # Rollback the transaction
         print('Error in /api/employee-details:', str(e))  # Debugging: Log the error
         return jsonify({'message': 'Failed to fetch employee details', 'error': str(e)}), 500
-
+@app.route('/api/project-count', methods=['GET'])
+def project_count():
+    try:
+        cur.execute("SELECT id, Employee_name, department, dateofhire,specialprojectscount FROM employees ORDER BY specialprojectscount ASC  ; ")
+        rows = cur.fetchall()
+        df = pd.DataFrame(rows, columns=['id', 'name', 'department', 'dateofhire', 'specialprojectscount'])
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        conn.rollback()  # Rollback the transaction
+        print('Error in /api/project-count:', str(e))  # Debugging: Log the error
+        return jsonify({'message': 'Failed to fetch employee details', 'error': str(e)}), 500
+@app.route('/api/employee-department', methods=['GET'])
+def employee_department():
+    try:
+        cur.execute("SELECT id, Employee_name, department, dateofhire FROM employees ORDER BY dateofhire ASC;")
+        rows = cur.fetchall()
+        df = pd.DataFrame(rows, columns=['id', 'name', 'department', 'dateofhire'])
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        conn.rollback()  
+        print('Error in /api/employee-department:', str(e))  
+        return jsonify({'message': 'Failed to fetch employee details', 'error': str(e)}), 500
+@app.route('/api/employee-salary', methods=['GET'])
+def employee_salary():
+    try:
+        cur.execute("SELECT id, Employee_name, Salary, dateofhire FROM employees ORDER BY Salary ASC;")
+        rows = cur.fetchall()
+        df = pd.DataFrame(rows, columns=['id', 'name', 'Salary', 'dateofhire'])
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        conn.rollback()  # Rollback the transaction
+        print('Error in /api/employee-salary:', str(e))  # Debugging: Log the error
+        return jsonify({'message': 'Failed to fetch employee details', 'error': str(e)}), 500
+@app.route('/api/employee-satisfaction', methods=['GET'])
+def employee_satifaction():
+    try:
+        cur.execute("SELECT id, Employee_name, Salary, dateofhire,empsatisfaction FROM employees ORDER BY empsatisfaction ASC;")
+        rows = cur.fetchall()
+        df = pd.DataFrame(rows, columns=['id', 'name', 'Salary', 'dateofhire','empsatisfaction'])
+        return jsonify(df.to_dict(orient='records'))
+    except Exception as e:
+        conn.rollback()  # Rollback the transaction
+        print('Error in /api/employee-satisfaction:', str(e))  # Debugging: Log the error
+        return jsonify({'message': 'Failed to fetch employee details', 'error': str(e)}), 500
 
 @app.route('/api/count', methods=['GET'])
 def employee_count():
